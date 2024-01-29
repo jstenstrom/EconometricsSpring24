@@ -1,0 +1,43 @@
+---
+title: "PS-1"
+author: "Jacob Stenstrom"
+date: '2024-01-29'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Empirical Question
+
+```{r ps1}
+library(tidyverse)
+library(sandwich)
+library(lmtest)
+library(jtools)
+library(sjPlot)
+library(sjmisc)
+library(sjlabelled)
+library(estimatr)
+library(haven)
+library(ivreg)
+library(oaxaca)
+
+test<- read.csv("~/R/R Homework/ip_frb.txt")
+test <- test %>% rename("Prod"="X7.6240000e.000")
+test<- test %>% mutate(ln_prod=log(Prod))
+test<- test %>% mutate(time=as.numeric(row.names(test)))
+time_series_df <- test[c('time','ln_prod')]
+ggplot(aes(x=time,y=ln_prod),data = test)+geom_point(size=2)+geom_line(color="red")
+
+library(mFilter)
+library(zoo)
+ts_zoo <- read.zoo(time_series_df)
+ts<-as.ts(ts_zoo)
+f<-bkfilter(ts,pl=18,pu=96)
+plot(f)
+#test2<-bkfilter(test['ln_prod'],pl=18,pu=96)
+
+```
+
